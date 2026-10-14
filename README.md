@@ -93,14 +93,14 @@ The proxy was also run under **ThreadSanitizer** with ~84,000 requests (includin
 
 ## Benchmark
 
-`./bench/benchmark.sh` — `wrk`, 100 concurrent connections, 3 Python backends, rate limiting off, 2-vCPU Linux VM:
+`./bench/benchmark.sh` — `wrk`, 100 concurrent connections for 15 s, 3 Python backends, rate limiting off, Ubuntu VM on VirtualBox:
 
 | Worker threads | Requests/sec | p50 | p99 | Errors |
 |---|---|---|---|---|
-| 1 | 2,275 | ~44 ms | 66 ms | 0 |
-| 8 | **4,368** | **22 ms** | **35 ms** | 0 |
+| 4 | 889 | 108 ms | 338 ms | 0 |
+| 8 | **1,039** | **91 ms** | **149 ms** | 0 |
 
-Moving from one worker to a pool of eight gave **1.9× throughput** and **47% lower p99 latency**. At this point the single-threaded Python test backends are the bottleneck, not the proxy.
+Doubling the worker pool from 4 to 8 gave **17% more throughput** and **cut p99 latency by 56%**. With more workers, fewer requests wait in the queue for a free thread, so tail latency drops sharply. Throughput is capped by the single-threaded Python test backends and the VM's limited CPU, not by the proxy.
 
 ## Design decisions
 
