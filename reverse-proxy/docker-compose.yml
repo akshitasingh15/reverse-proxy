@@ -1,0 +1,22 @@
+# Runs the proxy in front of three backend containers.
+#   docker compose up --build
+#   curl localhost:8080/
+services:
+  proxy:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - backend1
+      - backend2
+      - backend3
+
+  backend1:
+    build: ./backend
+    command: ["backend1"]
+  backend2:
+    build: ./backend
+    command: ["backend2"]
+  backend3:
+    build: ./backend
+    command: ["backend3"]
